@@ -148,16 +148,31 @@ Sum of T+D+M specificity levels: 0-9 scale. Threshold for "computable" gene: ≥
 4. **Dimension asymmetry:** Which dimensions of self-care practices are cognitively salient vs. which require active elicitation?
 5. **Boundary conditions:** Which types of stress-coping practices resist gene encoding even with AI support?
 
-### Seed Gene Corpus (ERC Deliverable)
+### Seed Gene Atlas (Dataset Contribution + ERC Deliverable)
 
-- N validated behavioural genes for stress/anxiety coping, each with:
-  - Specificity profile (T, D, M levels)
-  - Computability score (0-9)
-  - Source condition and refinement history (Condition 3)
-  - Original free-text description
-  - Researcher validation
-- Convergence analysis: How many unique Techniques? What's the distribution? (Power-law expected per Hosio 2018)
-- Coverage analysis: What proportion of stress-coping practice space do N genes cover?
+The paper contributes a structured, openly published dataset: the first gene atlas for stress/anxiety self-care.
+
+**Merging methodology (reported in paper):**
+1. Two researchers independently cluster all Technique descriptions into canonical groups using the BCTO criterion: same physical actions at same abstraction level → same technique. "Box breathing" and "square breathing" merge; "box breathing" and "deep breathing" stay distinct.
+2. Inter-rater agreement on clustering reported (Cohen's kappa). Edge cases adjudicated by third rater.
+3. For each canonical technique, Dosage and Mode variants are catalogued but not collapsed — the variation within a technique IS the data.
+
+**Atlas structure (per canonical gene):**
+- Canonical technique label + natural language variants that mapped to it
+- Frequency (how many participants described this technique)
+- Dosage range (min/max/modal observed values)
+- Mode variants observed
+- Mean specificity profile (T, D, M levels)
+- Source condition distribution (baseline / nudge / AI-refined)
+- Context and outcome triples (from exploratory component, self-reported)
+
+**Atlas-level analyses reported in paper:**
+- Number of canonical techniques (the ontological collapse test: is it 15 or 150?)
+- Technique frequency distribution (power-law test — the ERC proposal claims this, we verify it)
+- Coverage: what proportion of stress/anxiety coping is represented?
+- Specificity by technique: which practices are naturally well-specified vs. which resist encoding?
+
+**Publication:** Dataset published on Zenodo/OSF, CC-BY, alongside the paper. Raw anonymised descriptions included for re-coding/extension.
 
 ---
 
