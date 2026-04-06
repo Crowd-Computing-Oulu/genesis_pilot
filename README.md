@@ -5,43 +5,58 @@ Self-care is universal yet scientifically fragmented. Millions of people exercis
 **GENESIS** proposes a structural analogy from biology: just as genomics gave life sciences a formal language for genes, we aim to establish a formal grammar for everyday self-care. We call the basic unit a **behavioural gene** — a composable, computable representation of a self-care practice defined by three dimensions:
 
 - **Technique** — *What* you do (e.g., box breathing, running, journaling)
-- **Dosage** — *How much* (e.g., 20 minutes, 3× per week)
-- **Mode** — *In what form* (e.g., solo, app-guided, with a group)
+- **Dosage** — *How much* (e.g., 20 minutes, 3x per week, moderate intensity)
+- **Mode** — *In what form* (e.g., solo outdoors, app-guided, in a group class)
 
-A morning jog becomes `⟨T: Running, D: 20min, M: Solo⟩`. A guided breathing exercise becomes `⟨T: Box Breathing, D: 5min, M: App-Guided⟩`. The same formal structure captures both, making them comparable, combinable, and open to computational analysis.
+A morning jog becomes `⟨T: Running, D: 20min 3x/week, M: Solo outdoors⟩`. A guided breathing exercise becomes `⟨T: Box Breathing 4-4-4-4, D: 5min daily, M: Solo with timer app⟩`. The same formal structure captures both, making them comparable, combinable, and open to computational analysis.
 
 ## This Pilot Study
 
-This is an exploratory first step. Before we can build a large-scale citizen-science platform, we need to answer a fundamental HCI question: **can ordinary people reliably co-create structured behavioural genes from their own lived experience, when supported by the right interface and real-time AI assistance?**
+This pilot takes the first empirical step toward the GENESIS vision. We ask: **at what level of specificity do people naturally encode self-care practices, and what does it take to reach computable resolution through human-AI collaboration?**
 
-We run a between-subjects online experiment (N ≈ 300) comparing two ways of describing a recent self-care practice:
+We run a three-condition between-subjects online experiment (N≥300) focused on **stress and anxiety coping practices**.
 
-| | Condition A (Baseline) | Condition B (Gene-Structured) |
+### Conditions
+
+| Condition | What participants do | What it tests |
 |---|---|---|
-| **Input** | Free-form text box | Three visual cards: Technique, Dosage, Mode |
-| **Rationale** | Current norm in digital health apps | The novel interface we're testing |
+| **1. Pure Baseline** (n≥100) | Describe a stress-coping practice in free text, no hints | At what specificity level do people naturally encode T, D, M? |
+| **2. Textual Nudge** (n≥100) | Same free text, but prompt hints at "what you do, how much, in what way" | Does a minimal prompt push specificity from vague to computable? |
+| **3. AI-Assisted Refinement** (n≥100) | Free text, then 2-3 rounds of iterative AI dialogue that targets the weakest dimension each round | What's the refinement trajectory? How many rounds to reach computable resolution? |
 
-Both conditions then go through:
-1. **AI validation** — An LLM generates a structured gene displayed as editable visual cards. Participants verify, edit, or accept.
-2. **Gene-splicing preview** — Participants see their gene composed with another and reflect on the idea of computationally combining self-care practices.
+### Key Innovation: Specificity, Not Just Completeness
 
-We measure usability, perceived agency, trust in the AI encoding, gene completeness, and qualitative design feedback.
+We don't just code whether T, D, M are present. We code **specificity** on a 0-3 scale per dimension (grounded in TIDieR and the Michie ontologies): from absent (0) to vague (1) to named (2) to fully parameterised/computable (3). A gene like `⟨Breathing, sometimes, alone⟩` scores 3/9. A gene like `⟨Box Breathing 4-4-4-4, 5min 2x/daily, Solo with timer app⟩` scores 9/9. The difference is what makes a gene computable.
+
+### What We're After
+
+1. **Natural encoding resolution:** How specific are people without any help? Where does natural specificity break down?
+2. **Nudge vs. AI refinement:** What's the minimum intervention to reach computable genes?
+3. **Refinement telemetry:** Round-by-round improvement data from Condition 3 — which dimensions respond to AI dialogue, which resist?
+4. **A seed gene corpus:** Validated behavioural genes for stress/anxiety coping with full specificity profiles — the first tangible piece of the behavioural genome.
 
 ## Why This Matters
 
-If self-care practices can be meaningfully decomposed into formal genes, the implications are significant:
+If self-care practices can be encoded at computable resolution through human-AI collaboration, the implications are significant:
 
-- **For researchers:** Cross-study comparison becomes possible for the first time. Instead of parsing heterogeneous study descriptions, you query structured genes.
-- **For practitioners and developers:** Evidence-informed recommendations grounded in context — not "try meditation" but specific practice parameters matched to specific situations.
-- **For the field:** Self-care science becomes cumulative. Each contribution adds to a shared knowledge base rather than producing another isolated finding.
+- **For researchers:** Cross-study comparison becomes possible. Instead of parsing heterogeneous descriptions, you query structured genes at known specificity levels.
+- **For the GENESIS platform:** We learn exactly how the AI assistant should work — which dimensions need active elicitation, how many refinement rounds to build into the flow, where people plateau.
+- **For the field:** Self-care science becomes cumulative. Each contribution adds structured, comparable knowledge rather than another isolated anecdote.
 
-This is exploratory, high-risk work. Human self-care may be too contextual, too culturally embedded, or too personal to formalise without losing what matters. This pilot is how we start finding out.
+This is exploratory, high-risk work. The proposal acknowledges the risk of "ontological collapse" — self-care may be too variable to formalise without losing what matters. This pilot is how we start finding out.
 
 ## Tech Stack
 
 - PHP + SQLite
 - Bootstrap frontend
+- Claude API for real-time gene extraction and iterative refinement (Condition 3)
 - Hosted on Railway
+
+## Study Documents
+
+- `docs/study_design_memo.md` — Detailed study design rationale and decisions
+- `docs/pilot_idea.md.txt` — Original study concept (superseded by memo)
+- `docs/proposal.tex` — ERC Consolidator Grant proposal (B1)
 
 ## Team
 
