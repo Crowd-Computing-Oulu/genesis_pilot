@@ -14,3 +14,7 @@ vendor/
 
 # Environment
 .env
+
+# App data and config
+app/data/
+app/config.php
