@@ -1,0 +1,16 @@
+# Paper has its own git repo
+paper/
+
+# Internal docs and context (not for GitHub)
+docs/
+context/
+
+# SQLite databases
+*.db
+*.sqlite
+
+# PHP
+vendor/
+
+# Environment
+.env
