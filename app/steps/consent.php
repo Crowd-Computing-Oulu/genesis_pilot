@@ -5,20 +5,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['consent']) || empty($_POST['eligible_age']) || empty($_POST['eligible_practice'])) {
         $error = 'Please confirm all items to continue.';
     } else {
-        $db = get_db();
-
-        // Assign random condition
-        $condition = random_int(1, 3);
+        // Use forced condition if set (test links), otherwise random
+        $condition = $_SESSION['forced_condition'] ?? random_int(1, 3);
         $completion_code = 'GENESIS-' . strtoupper(bin2hex(random_bytes(3)));
 
-        $stmt = $db->prepare('INSERT INTO participants (prolific_pid, source, condition_num, completion_code) VALUES (:pid, :source, :cond, :code)');
-        $stmt->bindValue(':pid', $_SESSION['prolific_pid']);
-        $stmt->bindValue(':source', $_SESSION['source']);
-        $stmt->bindValue(':cond', $condition);
-        $stmt->bindValue(':code', $completion_code);
-        $stmt->execute();
+        if (!$is_test) {
+            $db = get_db();
+            $stmt = $db->prepare('INSERT INTO participants (prolific_pid, source, condition_num, completion_code) VALUES (:pid, :source, :cond, :code)');
+            $stmt->bindValue(':pid', $_SESSION['prolific_pid']);
+            $stmt->bindValue(':source', $_SESSION['source']);
+            $stmt->bindValue(':cond', $condition);
+            $stmt->bindValue(':code', $completion_code);
+            $stmt->execute();
+            $_SESSION['participant_id'] = $db->lastInsertRowID();
+        } else {
+            $_SESSION['participant_id'] = -1; // Dummy ID for test sessions
+        }
 
-        $_SESSION['participant_id'] = $db->lastInsertRowID();
         $_SESSION['condition'] = $condition;
         $_SESSION['completion_code'] = $completion_code;
 

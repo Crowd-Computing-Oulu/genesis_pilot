@@ -4,7 +4,12 @@ require_once __DIR__ . '/db.php';
 
 $step = $_GET['step'] ?? 'consent';
 
-// Handle Prolific PID or generate web PID
+// Handle forced condition for testing (e.g., ?condition=2)
+if (isset($_GET['condition']) && $step === 'consent') {
+    $_SESSION['forced_condition'] = (int)$_GET['condition'];
+}
+
+// Handle Prolific PID or generate web/test PID
 if ($step === 'consent' && !isset($_SESSION['participant_id'])) {
     $prolific_pid = $_GET['PROLIFIC_PID'] ?? null;
     if ($prolific_pid) {
@@ -14,7 +19,16 @@ if ($step === 'consent' && !isset($_SESSION['participant_id'])) {
         $_SESSION['source'] = 'web';
         $_SESSION['prolific_pid'] = 'web_' . bin2hex(random_bytes(4));
     }
+
+    // Test mode: test_ prefix means no database writes
+    if (isset($_GET['test'])) {
+        $_SESSION['prolific_pid'] = 'test_' . bin2hex(random_bytes(4));
+        $_SESSION['source'] = 'test';
+    }
 }
+
+// Check if this is a test session (no DB writes)
+$is_test = ($_SESSION['source'] ?? '') === 'test';
 
 // Calculate progress for progress bar
 $steps_order = ['consent', 'input', 'refinement', 'fidelity', 'exploratory', 'questionnaire', 'debrief'];

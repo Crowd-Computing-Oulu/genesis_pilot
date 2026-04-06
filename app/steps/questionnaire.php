@@ -13,22 +13,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fidelity = $_SESSION['fidelity_data'] ?? [];
     $exploratory = $_SESSION['exploratory_data'] ?? [];
 
-    $stmt = $db->prepare('INSERT INTO questionnaire (participant_id, semantic_fidelity, forced_fit, willingness, interest, context_text, outcome_text, fidelity_feedback, general_feedback) VALUES (:pid, :sf, :ff, :w, :i, :ctx, :out, :ffb, :gfb)');
-    $stmt->bindValue(':pid', $_SESSION['participant_id']);
-    $stmt->bindValue(':sf', $fidelity['semantic_fidelity'] ?? null);
-    $stmt->bindValue(':ff', $fidelity['forced_fit'] ?? null);
-    $stmt->bindValue(':w', (int)($_POST['willingness'] ?? 0));
-    $stmt->bindValue(':i', (int)($_POST['interest'] ?? 0));
-    $stmt->bindValue(':ctx', $exploratory['context_text'] ?? '');
-    $stmt->bindValue(':out', $exploratory['outcome_text'] ?? '');
-    $stmt->bindValue(':ffb', $fidelity['fidelity_feedback'] ?? '');
-    $stmt->bindValue(':gfb', trim($_POST['general_feedback'] ?? ''));
-    $stmt->execute();
+    if (!$is_test) {
+        $db = get_db();
+        $stmt = $db->prepare('INSERT INTO questionnaire (participant_id, semantic_fidelity, forced_fit, willingness, interest, context_text, outcome_text, fidelity_feedback, general_feedback) VALUES (:pid, :sf, :ff, :w, :i, :ctx, :out, :ffb, :gfb)');
+        $stmt->bindValue(':pid', $_SESSION['participant_id']);
+        $stmt->bindValue(':sf', $fidelity['semantic_fidelity'] ?? null);
+        $stmt->bindValue(':ff', $fidelity['forced_fit'] ?? null);
+        $stmt->bindValue(':w', (int)($_POST['willingness'] ?? 0));
+        $stmt->bindValue(':i', (int)($_POST['interest'] ?? 0));
+        $stmt->bindValue(':ctx', $exploratory['context_text'] ?? '');
+        $stmt->bindValue(':out', $exploratory['outcome_text'] ?? '');
+        $stmt->bindValue(':ffb', $fidelity['fidelity_feedback'] ?? '');
+        $stmt->bindValue(':gfb', trim($_POST['general_feedback'] ?? ''));
+        $stmt->execute();
 
-    // Mark participant as completed
-    $stmt = $db->prepare('UPDATE participants SET completed_at = CURRENT_TIMESTAMP WHERE id = :pid');
-    $stmt->bindValue(':pid', $_SESSION['participant_id']);
-    $stmt->execute();
+        $stmt = $db->prepare('UPDATE participants SET completed_at = CURRENT_TIMESTAMP WHERE id = :pid');
+        $stmt->bindValue(':pid', $_SESSION['participant_id']);
+        $stmt->execute();
+    }
 
     header('Location: ?step=debrief');
     exit;

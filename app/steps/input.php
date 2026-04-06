@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strlen($description) < 10) {
         $error = 'Please write at least a few sentences about your practice.';
     } else {
-        $db = get_db();
         $_SESSION['description'] = $description;
 
         // Determine which prompt was shown
@@ -21,12 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ? 'Describe this practice in your own words. Try to describe: what exactly you do, how much or how often, and in what way or setting.'
             : 'Describe this practice in your own words. Tell us whatever feels important about what you do.';
 
-        $stmt = $db->prepare('INSERT INTO responses (participant_id, step, prompt_shown, response_text) VALUES (:pid, :step, :prompt, :text)');
-        $stmt->bindValue(':pid', $_SESSION['participant_id']);
-        $stmt->bindValue(':step', 'initial_description');
-        $stmt->bindValue(':prompt', $prompt);
-        $stmt->bindValue(':text', $description);
-        $stmt->execute();
+        if (!$is_test) {
+            $db = get_db();
+            $stmt = $db->prepare('INSERT INTO responses (participant_id, step, prompt_shown, response_text) VALUES (:pid, :step, :prompt, :text)');
+            $stmt->bindValue(':pid', $_SESSION['participant_id']);
+            $stmt->bindValue(':step', 'initial_description');
+            $stmt->bindValue(':prompt', $prompt);
+            $stmt->bindValue(':text', $description);
+            $stmt->execute();
+        }
 
         // For Condition 3, go to refinement. For 1 & 2, go to fidelity.
         if ($condition === 3) {

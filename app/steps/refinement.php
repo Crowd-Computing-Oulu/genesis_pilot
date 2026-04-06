@@ -7,14 +7,12 @@ if (!isset($_SESSION['participant_id']) || $_SESSION['condition'] !== 3) {
     exit;
 }
 
-$db = get_db();
 $round = (int)($_GET['round'] ?? 0);
 
 // Round 0: Initial extraction
 if ($round === 0) {
     $gene = extract_gene($_SESSION['description']);
     if (!$gene) {
-        // Fallback if LLM fails
         $gene = [
             'technique' => ['value' => null, 'confidence' => 'low'],
             'dosage' => ['value' => null, 'confidence' => 'low'],
@@ -22,17 +20,19 @@ if ($round === 0) {
         ];
     }
 
-    // Save extraction
-    $stmt = $db->prepare('INSERT INTO gene_extractions (participant_id, round, technique, dosage, mode, technique_confidence, dosage_confidence, mode_confidence, raw_llm_response) VALUES (:pid, 0, :t, :d, :m, :tc, :dc, :mc, :raw)');
-    $stmt->bindValue(':pid', $_SESSION['participant_id']);
-    $stmt->bindValue(':t', $gene['technique']['value']);
-    $stmt->bindValue(':d', $gene['dosage']['value']);
-    $stmt->bindValue(':m', $gene['mode']['value']);
-    $stmt->bindValue(':tc', $gene['technique']['confidence']);
-    $stmt->bindValue(':dc', $gene['dosage']['confidence']);
-    $stmt->bindValue(':mc', $gene['mode']['confidence']);
-    $stmt->bindValue(':raw', $gene['_raw'] ?? '');
-    $stmt->execute();
+    if (!$is_test) {
+        $db = get_db();
+        $stmt = $db->prepare('INSERT INTO gene_extractions (participant_id, round, technique, dosage, mode, technique_confidence, dosage_confidence, mode_confidence, raw_llm_response) VALUES (:pid, 0, :t, :d, :m, :tc, :dc, :mc, :raw)');
+        $stmt->bindValue(':pid', $_SESSION['participant_id']);
+        $stmt->bindValue(':t', $gene['technique']['value']);
+        $stmt->bindValue(':d', $gene['dosage']['value']);
+        $stmt->bindValue(':m', $gene['mode']['value']);
+        $stmt->bindValue(':tc', $gene['technique']['confidence']);
+        $stmt->bindValue(':dc', $gene['dosage']['confidence']);
+        $stmt->bindValue(':mc', $gene['mode']['confidence']);
+        $stmt->bindValue(':raw', $gene['_raw'] ?? '');
+        $stmt->execute();
+    }
 
     $_SESSION['current_gene'] = $gene;
 
@@ -52,13 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $round >= 1 && $round <= 2) {
     } else {
         $target = $_SESSION['current_target'];
 
-        // Save participant response
-        $stmt = $db->prepare('INSERT INTO responses (participant_id, step, prompt_shown, response_text) VALUES (:pid, :step, :prompt, :text)');
-        $stmt->bindValue(':pid', $_SESSION['participant_id']);
-        $stmt->bindValue(':step', 'refinement_r' . $round);
-        $stmt->bindValue(':prompt', $_SESSION['current_question']);
-        $stmt->bindValue(':text', $response);
-        $stmt->execute();
+        if (!$is_test) {
+            $db = get_db();
+            $stmt = $db->prepare('INSERT INTO responses (participant_id, step, prompt_shown, response_text) VALUES (:pid, :step, :prompt, :text)');
+            $stmt->bindValue(':pid', $_SESSION['participant_id']);
+            $stmt->bindValue(':step', 'refinement_r' . $round);
+            $stmt->bindValue(':prompt', $_SESSION['current_question']);
+            $stmt->bindValue(':text', $response);
+            $stmt->execute();
+        }
 
         // Call LLM to refine
         $refined = refine_gene(
@@ -73,26 +75,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $round >= 1 && $round <= 2) {
             $next_target = $refined['next_target'] ?? 'mode';
             $next_question = $refined['next_question'] ?? "Can you tell us more about how you do this practice?";
         } else {
-            // Fallback — keep current gene, ask generic question
             $next_target = 'mode';
             $next_question = "Can you tell us more about how you do this practice?";
             $refined = $_SESSION['current_gene'];
         }
 
-        // Save refined extraction
-        $stmt = $db->prepare('INSERT INTO gene_extractions (participant_id, round, technique, dosage, mode, technique_confidence, dosage_confidence, mode_confidence, targeted_dimension, ai_question, raw_llm_response) VALUES (:pid, :round, :t, :d, :m, :tc, :dc, :mc, :td, :aq, :raw)');
-        $stmt->bindValue(':pid', $_SESSION['participant_id']);
-        $stmt->bindValue(':round', $round);
-        $stmt->bindValue(':t', $refined['technique']['value'] ?? null);
-        $stmt->bindValue(':d', $refined['dosage']['value'] ?? null);
-        $stmt->bindValue(':m', $refined['mode']['value'] ?? null);
-        $stmt->bindValue(':tc', $refined['technique']['confidence'] ?? 'low');
-        $stmt->bindValue(':dc', $refined['dosage']['confidence'] ?? 'low');
-        $stmt->bindValue(':mc', $refined['mode']['confidence'] ?? 'low');
-        $stmt->bindValue(':td', $target);
-        $stmt->bindValue(':aq', $_SESSION['current_question']);
-        $stmt->bindValue(':raw', $refined['_raw'] ?? '');
-        $stmt->execute();
+        if (!$is_test) {
+            $stmt = $db->prepare('INSERT INTO gene_extractions (participant_id, round, technique, dosage, mode, technique_confidence, dosage_confidence, mode_confidence, targeted_dimension, ai_question, raw_llm_response) VALUES (:pid, :round, :t, :d, :m, :tc, :dc, :mc, :td, :aq, :raw)');
+            $stmt->bindValue(':pid', $_SESSION['participant_id']);
+            $stmt->bindValue(':round', $round);
+            $stmt->bindValue(':t', $refined['technique']['value'] ?? null);
+            $stmt->bindValue(':d', $refined['dosage']['value'] ?? null);
+            $stmt->bindValue(':m', $refined['mode']['value'] ?? null);
+            $stmt->bindValue(':tc', $refined['technique']['confidence'] ?? 'low');
+            $stmt->bindValue(':dc', $refined['dosage']['confidence'] ?? 'low');
+            $stmt->bindValue(':mc', $refined['mode']['confidence'] ?? 'low');
+            $stmt->bindValue(':td', $target);
+            $stmt->bindValue(':aq', $_SESSION['current_question']);
+            $stmt->bindValue(':raw', $refined['_raw'] ?? '');
+            $stmt->execute();
+        }
 
         if ($round < 2) {
             $_SESSION['current_target'] = $next_target;
@@ -107,9 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $round >= 1 && $round <= 2) {
 
 // Round 3: Final confirmation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $round === 3) {
-    // User confirmed or adjusted
     $adjustment = trim($_POST['adjustment'] ?? '');
-    if ($adjustment) {
+    if ($adjustment && !$is_test) {
+        $db = get_db();
         $stmt = $db->prepare('INSERT INTO responses (participant_id, step, prompt_shown, response_text) VALUES (:pid, :step, :prompt, :text)');
         $stmt->bindValue(':pid', $_SESSION['participant_id']);
         $stmt->bindValue(':step', 'refinement_r3_adjustment');
@@ -152,8 +154,8 @@ require __DIR__ . '/../templates/header.php';
         foreach ($dims as $key => $label):
             $value = $gene[$key]['value'] ?? null;
             $confidence = $gene[$key]['confidence'] ?? 'low';
-            $is_target = ($key === $_SESSION['current_target']);
-            $card_class = $is_target ? 'gene-weak' : ($confidence === 'high' ? 'gene-strong' : '');
+            $is_target_dim = ($key === $_SESSION['current_target']);
+            $card_class = $is_target_dim ? 'gene-weak' : ($confidence === 'high' ? 'gene-strong' : '');
         ?>
         <div class="gene-card <?= $card_class ?>">
             <div class="gene-label"><?= $label ?></div>

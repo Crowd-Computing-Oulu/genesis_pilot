@@ -50,6 +50,17 @@ if ($view === 'export') {
     exit;
 }
 
+// Handle participant deletion
+if ($view === 'delete' && isset($_GET['id'])) {
+    $del_id = (int)$_GET['id'];
+    $db->exec("DELETE FROM questionnaire WHERE participant_id = {$del_id}");
+    $db->exec("DELETE FROM gene_extractions WHERE participant_id = {$del_id}");
+    $db->exec("DELETE FROM responses WHERE participant_id = {$del_id}");
+    $db->exec("DELETE FROM participants WHERE id = {$del_id}");
+    header("Location: {$base_url}&view=overview");
+    exit;
+}
+
 // Handle DB download
 if ($view === 'download_db') {
     $db_path = $config['db_path'];
@@ -124,6 +135,17 @@ $page_title = 'GENESIS Admin';
     foreach ($avg_times as $at) $avg_map[$at['condition_num']] = $at['avg_min'];
     ?>
 
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Test Links <small class="text-muted">(no data stored)</small></h5>
+            <div class="d-flex gap-2">
+                <a href="index.php?test=1&condition=1" target="_blank" class="btn btn-outline-primary btn-sm">Condition 1 — Baseline</a>
+                <a href="index.php?test=1&condition=2" target="_blank" class="btn btn-outline-primary btn-sm">Condition 2 — Nudge</a>
+                <a href="index.php?test=1&condition=3" target="_blank" class="btn btn-outline-primary btn-sm">Condition 3 — AI Coach</a>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
@@ -183,16 +205,17 @@ $page_title = 'GENESIS Admin';
         <div class="card-body">
             <h5>Recent Participants</h5>
             <table class="table table-sm table-hover mb-0">
-                <thead><tr><th>ID</th><th>PID</th><th>Source</th><th>Condition</th><th>Started</th><th>Status</th></tr></thead>
+                <thead><tr><th>ID</th><th>PID</th><th>Source</th><th>Condition</th><th>Started</th><th>Status</th><th></th></tr></thead>
                 <tbody>
                 <?php foreach ($recent as $p): ?>
-                <tr style="cursor:pointer" onclick="window.location='<?= $base_url ?>&view=detail&id=<?= $p['id'] ?>'">
-                    <td><?= $p['id'] ?></td>
-                    <td><code><?= htmlspecialchars($p['prolific_pid']) ?></code></td>
+                <tr>
+                    <td style="cursor:pointer" onclick="window.location='<?= $base_url ?>&view=detail&id=<?= $p['id'] ?>'"><?= $p['id'] ?></td>
+                    <td style="cursor:pointer" onclick="window.location='<?= $base_url ?>&view=detail&id=<?= $p['id'] ?>'"><code><?= htmlspecialchars($p['prolific_pid']) ?></code></td>
                     <td><?= $p['source'] ?></td>
                     <td><?= $cond_labels[$p['condition_num']] ?? $p['condition_num'] ?></td>
                     <td><?= $p['started_at'] ?></td>
                     <td><?= $p['completed_at'] ? '<span class="badge bg-success">Done</span>' : '<span class="badge bg-warning">In progress</span>' ?></td>
+                    <td><a href="<?= $base_url ?>&view=delete&id=<?= $p['id'] ?>" onclick="return confirm('Delete all data for this participant?')" title="Delete participant and all data" class="text-danger text-decoration-none">&#128465;</a></td>
                 </tr>
                 <?php endforeach; ?>
                 </tbody>

@@ -21,17 +21,19 @@ if ($condition !== 3 && !isset($_SESSION['fidelity_gene'])) {
         ];
     }
 
-    // Save extraction (round 0 for conditions 1-2)
-    $stmt = $db->prepare('INSERT INTO gene_extractions (participant_id, round, technique, dosage, mode, technique_confidence, dosage_confidence, mode_confidence, raw_llm_response) VALUES (:pid, 0, :t, :d, :m, :tc, :dc, :mc, :raw)');
-    $stmt->bindValue(':pid', $_SESSION['participant_id']);
-    $stmt->bindValue(':t', $gene['technique']['value']);
-    $stmt->bindValue(':d', $gene['dosage']['value']);
-    $stmt->bindValue(':m', $gene['mode']['value']);
-    $stmt->bindValue(':tc', $gene['technique']['confidence']);
-    $stmt->bindValue(':dc', $gene['dosage']['confidence']);
-    $stmt->bindValue(':mc', $gene['mode']['confidence']);
-    $stmt->bindValue(':raw', $gene['_raw'] ?? '');
-    $stmt->execute();
+    if (!$is_test) {
+        $db = get_db();
+        $stmt = $db->prepare('INSERT INTO gene_extractions (participant_id, round, technique, dosage, mode, technique_confidence, dosage_confidence, mode_confidence, raw_llm_response) VALUES (:pid, 0, :t, :d, :m, :tc, :dc, :mc, :raw)');
+        $stmt->bindValue(':pid', $_SESSION['participant_id']);
+        $stmt->bindValue(':t', $gene['technique']['value']);
+        $stmt->bindValue(':d', $gene['dosage']['value']);
+        $stmt->bindValue(':m', $gene['mode']['value']);
+        $stmt->bindValue(':tc', $gene['technique']['confidence']);
+        $stmt->bindValue(':dc', $gene['dosage']['confidence']);
+        $stmt->bindValue(':mc', $gene['mode']['confidence']);
+        $stmt->bindValue(':raw', $gene['_raw'] ?? '');
+        $stmt->execute();
+    }
 
     $_SESSION['fidelity_gene'] = $gene;
 }
