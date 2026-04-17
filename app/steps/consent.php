@@ -11,13 +11,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$is_test) {
             $db = get_db();
-            $stmt = $db->prepare('INSERT INTO participants (prolific_pid, source, condition_num, completion_code) VALUES (:pid, :source, :cond, :code)');
+            $stmt = $db->prepare('SELECT id, condition_num, completion_code FROM participants WHERE prolific_pid = :pid');
             $stmt->bindValue(':pid', $_SESSION['prolific_pid']);
-            $stmt->bindValue(':source', $_SESSION['source']);
-            $stmt->bindValue(':cond', $condition);
-            $stmt->bindValue(':code', $completion_code);
-            $stmt->execute();
-            $_SESSION['participant_id'] = $db->lastInsertRowID();
+            $existing = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+
+            if ($existing) {
+                $_SESSION['participant_id'] = (int)$existing['id'];
+                $condition = (int)$existing['condition_num'];
+                $completion_code = $existing['completion_code'];
+            } else {
+                $stmt = $db->prepare('INSERT INTO participants (prolific_pid, source, condition_num, completion_code) VALUES (:pid, :source, :cond, :code)');
+                $stmt->bindValue(':pid', $_SESSION['prolific_pid']);
+                $stmt->bindValue(':source', $_SESSION['source']);
+                $stmt->bindValue(':cond', $condition);
+                $stmt->bindValue(':code', $completion_code);
+                $stmt->execute();
+                $_SESSION['participant_id'] = $db->lastInsertRowID();
+            }
         } else {
             $_SESSION['participant_id'] = -1; // Dummy ID for test sessions
         }

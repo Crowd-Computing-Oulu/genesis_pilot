@@ -15,6 +15,9 @@ vendor/
 # Environment
 .env
 
+# Local Claude context (machine-specific paths, personal notes)
+CLAUDE.local.md
+
 # App data and config
 app/data/
 app/config.php

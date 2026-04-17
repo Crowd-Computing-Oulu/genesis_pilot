@@ -58,11 +58,11 @@ docs/
   study_design_memo.md      -- Current study design rationale and decisions
   ideas_ontology_normalisation.md -- Research notes on gene normalisation
   pilot_idea.md.txt         -- Original study concept (superseded)
-  proposal.tex              -- ERC Consolidator Grant proposal (B1)
 
 paper/                      -- CHI paper (separate git repo, syncs with Overleaf)
   paper.tex                 -- Paper structure with section outlines
   references.bib            -- Scratchpad bibliography
+  context/                  -- All the related work of the paper here as .md files
 ```
 
 ## Tech Stack
