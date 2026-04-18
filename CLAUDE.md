@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-GENESIS Pilot — a three-condition between-subjects online experiment (N≥300) that takes the first empirical step toward the GENESIS ERC application. The study validates whether behavioural genes ⟨Technique, Dosage, Mode⟩ are a natural cognitive structure for self-care, explores what minimal support helps people encode complete genes, and produces a seed gene atlas for stress/anxiety coping.
+ATLAS Pilot — a three-condition between-subjects online experiment (N≥300) that takes the first empirical step toward the ATLAS ERC application. The study validates whether behavioural genes ⟨Technique, Dosage, Mode⟩ are a natural cognitive structure for self-care, explores what minimal support helps people encode complete genes, and produces a seed gene atlas for stress/anxiety coping.
 
 ### Conditions
 - **Condition 1 (Pure baseline):** Free-form text, no hints, no AI. Tests at what specificity level people naturally encode T/D/M.

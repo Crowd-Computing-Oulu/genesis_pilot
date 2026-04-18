@@ -66,7 +66,7 @@ if ($view === 'download_db') {
     $db_path = $config['db_path'];
     if (file_exists($db_path)) {
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=genesis_' . date('Y-m-d_His') . '.db');
+        header('Content-Disposition: attachment; filename=atlas_' . date('Y-m-d_His') . '.db');
         header('Content-Length: ' . filesize($db_path));
         readfile($db_path);
     }
@@ -83,7 +83,7 @@ function fetch_all(SQLite3 $db, string $sql): array {
     return $rows;
 }
 
-$page_title = 'GENESIS Admin';
+$page_title = 'ATLAS Admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,7 +106,7 @@ $page_title = 'GENESIS Admin';
 <div class="container-fluid py-4" style="max-width: 1200px;">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>GENESIS Admin Dashboard</h3>
+        <h3>ATLAS Admin Dashboard</h3>
         <div>
             <a href="<?= $base_url ?>&view=overview" class="btn btn-sm <?= $view === 'overview' ? 'btn-primary' : 'btn-outline-primary' ?>">Overview</a>
             <a href="<?= $base_url ?>&view=participants" class="btn btn-sm <?= $view === 'participants' ? 'btn-primary' : 'btn-outline-primary' ?>">Participants</a>

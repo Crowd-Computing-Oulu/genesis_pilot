@@ -1,4 +1,4 @@
-# GENESIS Pilot — PHP Prototype Spec
+# ATLAS Pilot — PHP Prototype Spec
 
 **Date:** 2026-04-06
 **Status:** Draft for review
@@ -7,7 +7,7 @@
 
 ## Purpose
 
-A minimal working prototype of the GENESIS pilot study. Three conditions, participant flow from consent to debrief, AI-assisted refinement in Condition 3, SQLite storage, and an admin dashboard. Built to be looked at and iterated on — not production-ready for Prolific launch yet.
+A minimal working prototype of the ATLAS pilot study. Three conditions, participant flow from consent to debrief, AI-assisted refinement in Condition 3, SQLite storage, and an admin dashboard. Built to be looked at and iterated on — not production-ready for Prolific launch yet.
 
 ---
 
@@ -31,7 +31,7 @@ Single entry: `index.php`
 
 ### Step 1: Consent + Eligibility
 
-- Brief information sheet (what the study is about, how data is used, GENESIS framing)
+- Brief information sheet (what the study is about, how data is used, ATLAS framing)
 - Consent checkbox: "I agree to participate"
 - Eligibility: "Are you 18 or older?" + "Do you have a stress/anxiety coping practice you've used in the past month?"
 - If not eligible, polite exit screen
@@ -117,7 +117,7 @@ For Conditions 1 and 2, the AI extracts T/D/M from the free text (not shown to p
 
 ### Step 7: Debrief
 
-- Brief explanation of the GENESIS project and how their contribution helps
+- Brief explanation of the ATLAS project and how their contribution helps
 - Completion code displayed
 - If Prolific PID: auto-redirect link to Prolific completion URL
 - If web participant: thank-you message

@@ -1,4 +1,4 @@
-# GENESIS Pilot: Study Design Memo
+# ATLAS Pilot: Study Design Memo
 
 **Date:** 2026-04-06 (revised)
 **Author:** Simo Hosio (with Claude research assistance)
@@ -8,7 +8,7 @@
 
 ## Goal
 
-Run a pilot study that takes the first empirical step toward the GENESIS ERC application. The study must:
+Run a pilot study that takes the first empirical step toward the ATLAS ERC application. The study must:
 
 1. **Validate the gene concept at depth:** Not just whether T/D/M dimensions appear, but at what *specificity level* people naturally encode each dimension — and what it takes to reach computable resolution
 2. **Characterise the refinement trajectory:** How much human-AI dialogue is needed to go from natural language to a computable gene?
@@ -182,7 +182,7 @@ The paper contributes a structured, openly published dataset: the first gene atl
 - "What situation typically leads you to do this practice?" (context)
 - "What do you typically notice afterward?" (outcome)
 
-This collects self-reported context → gene → outcome triples. These are **reported associations, not causal claims.** They are the raw material that the future GENESIS platform would aggregate at scale. Useful for:
+This collects self-reported context → gene → outcome triples. These are **reported associations, not causal claims.** They are the raw material that the future ATLAS platform would aggregate at scale. Useful for:
 - Illustrative figures in the paper
 - Demonstrating the data format the platform would produce
 - Feeding into Study 2 design (if a second study explores DAG-like visualisations)
@@ -258,7 +258,7 @@ Must be written and piloted before data collection:
 3. **Number of refinement rounds:** 2-3 is a guess. Pilot to determine where diminishing returns set in.
 4. **Study 2:** Potential second study exploring DAG-like visualisations of aggregated corpus data. Design TBD — depends on Study 1 results and the ontology collapse solution.
 5. **Pre-registration:** OSF before Prolific launch.
-6. **Corpus format:** How will the seed gene set be stored? Needs to be reusable for the GENESIS platform.
+6. **Corpus format:** How will the seed gene set be stored? Needs to be reusable for the ATLAS platform.
 
 ---
 

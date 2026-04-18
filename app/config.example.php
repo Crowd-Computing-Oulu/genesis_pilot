@@ -1,6 +1,6 @@
 <?php
 return [
-    'db_path' => __DIR__ . '/data/genesis.db',
+    'db_path' => __DIR__ . '/data/atlas.db',
     'claude_api_key' => 'sk-ant-xxxxx',
     'claude_model' => 'claude-sonnet-4-20250514',
     'admin_key' => 'change-this-secret',

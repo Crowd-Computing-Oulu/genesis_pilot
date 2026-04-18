@@ -1,5 +1,5 @@
 <?php
-$page_title = 'GENESIS Study — Final Questions';
+$page_title = 'ATLAS Study — Final Questions';
 
 if (!isset($_SESSION['participant_id'])) {
     header('Location: ?step=consent');

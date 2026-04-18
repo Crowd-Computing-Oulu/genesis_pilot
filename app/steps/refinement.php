@@ -1,5 +1,5 @@
 <?php
-$page_title = 'GENESIS Study — Refining Your Practice';
+$page_title = 'ATLAS Study — Refining Your Practice';
 require_once __DIR__ . '/../llm.php';
 
 if (!isset($_SESSION['participant_id']) || $_SESSION['condition'] !== 3) {

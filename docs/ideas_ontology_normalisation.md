@@ -24,7 +24,7 @@ Marques et al. (2024) transformed BCTTv1's 93 flat techniques into a 281-node hi
 
 If none of these hold, descriptions are synonyms, not distinct techniques.
 
-**For GENESIS:** This gives us a principled decision rule. "Box breathing" and "square breathing" → synonyms (same mechanism, same outcomes, annotators can't distinguish). "Box breathing" and "diaphragmatic breathing" → possibly distinct (different instructions, potentially different mechanisms).
+**For ATLAS:** This gives us a principled decision rule. "Box breathing" and "square breathing" → synonyms (same mechanism, same outcomes, annotators can't distinguish). "Box breathing" and "diaphragmatic breathing" → possibly distinct (different instructions, potentially different mechanisms).
 
 ### The Gene Ontology's synonym taxonomy
 
@@ -34,13 +34,13 @@ GO defines four synonym scopes:
 - **NARROW:** Synonym is more specific ("4-second box breathing" for "box breathing")
 - **RELATED:** Conceptually linked but not hierarchical ("mindful breathing" ↔ "diaphragmatic breathing")
 
-**For GENESIS:** This vocabulary should be adopted for the coding manual. When two descriptions differ, classify the relationship before deciding to merge or split.
+**For ATLAS:** This vocabulary should be adopted for the coding manual. When two descriptions differ, classify the relationship before deciding to merge or split.
 
 ### The Human Behaviour-Change Project: ML extraction reality check
 
 West et al. (2023) trained NER on 512 annotated RCT reports. Mean F1 for automated BCT extraction = 0.42. The problem: natural language descriptions of techniques are semantically diverse. Same technique, very different vocabulary.
 
-**For GENESIS:** Automated normalisation at scale will be hard. The pilot's human coding phase is not just methodology — it's building the training set for future automation. Every coding decision is a versioned ontological commitment.
+**For ATLAS:** Automated normalisation at scale will be hard. The pilot's human coding phase is not just methodology — it's building the training set for future automation. Every coding decision is a versioned ontological commitment.
 
 ### Different dimensions have different normalisation difficulty
 

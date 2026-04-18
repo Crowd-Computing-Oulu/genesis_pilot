@@ -1,8 +1,8 @@
-# GENESIS Pilot: Unlocking the Genome of Everyday Self-Care
+# ATLAS Pilot: Unlocking the Genome of Everyday Self-Care
 
 Self-care is universal yet scientifically fragmented. Millions of people exercise, meditate, journal, and breathe intentionally — but there is no shared computational language to describe, compare, or combine these practices across people and contexts. The science of self-care remains stuck in anecdotes and isolated findings.
 
-**GENESIS** proposes a structural analogy from biology: just as genomics gave life sciences a formal language for genes, we aim to establish a formal grammar for everyday self-care. We call the basic unit a **behavioural gene** — a composable, computable representation of a self-care practice defined by three dimensions:
+**ATLAS** proposes a structural analogy from biology: just as genomics gave life sciences a formal language for genes, we aim to establish a formal grammar for everyday self-care. We call the basic unit a **behavioural gene** — a composable, computable representation of a self-care practice defined by three dimensions:
 
 - **Technique** — *What* you do (e.g., box breathing, running, journaling)
 - **Dosage** — *How much* (e.g., 20 minutes, 3x per week, moderate intensity)
@@ -12,7 +12,7 @@ A morning jog becomes `⟨T: Running, D: 20min 3x/week, M: Solo outdoors⟩`. A 
 
 ## This Pilot Study
 
-This pilot takes the first empirical step toward the GENESIS vision. We ask: **at what level of specificity do people naturally encode self-care practices, and what does it take to reach computable resolution through human-AI collaboration?**
+This pilot takes the first empirical step toward the ATLAS vision. We ask: **at what level of specificity do people naturally encode self-care practices, and what does it take to reach computable resolution through human-AI collaboration?**
 
 We run a three-condition between-subjects online experiment (N≥300) focused on **stress and anxiety coping practices**.
 
@@ -40,7 +40,7 @@ We don't just code whether T, D, M are present. We code **specificity** on a 0-3
 If self-care practices can be encoded at computable resolution through human-AI collaboration, the implications are significant:
 
 - **For researchers:** Cross-study comparison becomes possible. Instead of parsing heterogeneous descriptions, you query structured genes at known specificity levels.
-- **For the GENESIS platform:** We learn exactly how the AI assistant should work — which dimensions need active elicitation, how many refinement rounds to build into the flow, where people plateau.
+- **For the ATLAS platform:** We learn exactly how the AI assistant should work — which dimensions need active elicitation, how many refinement rounds to build into the flow, where people plateau.
 - **For the field:** Self-care science becomes cumulative. Each contribution adds structured, comparable knowledge rather than another isolated anecdote.
 
 This is exploratory, high-risk work. The proposal acknowledges the risk of "ontological collapse" — self-care may be too variable to formalise without losing what matters. This pilot is how we start finding out.

@@ -1,5 +1,5 @@
 <?php
-$page_title = 'GENESIS Study — Welcome';
+$page_title = 'ATLAS Study — Welcome';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['consent']) || empty($_POST['eligible_age']) || empty($_POST['eligible_practice'])) {
@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Use forced condition if set (test links), otherwise random
         $condition = $_SESSION['forced_condition'] ?? random_int(1, 3);
-        $completion_code = 'GENESIS-' . strtoupper(bin2hex(random_bytes(3)));
+        $completion_code = 'ATLAS-' . strtoupper(bin2hex(random_bytes(3)));
 
         if (!$is_test) {
             $db = get_db();
@@ -44,7 +44,7 @@ require __DIR__ . '/../templates/header.php';
 ?>
 
 <div class="study-card">
-    <h2 class="mb-3">Welcome to the GENESIS Study</h2>
+    <h2 class="mb-3">Welcome to the ATLAS Study</h2>
     <p>We are researchers at the University of Oulu studying how people describe their everyday self-care practices. Your input will help us understand how to build better tools for self-care science.</p>
 
     <h5 class="mt-4">What you'll do</h5>
