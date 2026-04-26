@@ -1,36 +1,69 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 ## EXTREMELY IMPORTANT: Scientific Rigour
 
-**Never produce hand-wavy, theoretically indefensible claims.** This is a scientific project targeting CHI publication as part of an ERC Consolidator Grant. Every design choice, every mechanism, every causal claim must be theoretically grounded and defensible. If something cannot be justified rigorously, say so — do not dress it up in plausible-sounding language. If you are unsure whether a claim holds, flag it as uncertain rather than presenting it as fact. Simo is a professor and CHI subcommittee chair. Do not waste his time with nonsense.
+Never produce hand-wavy, theoretically indefensible claims. This is a scientific project targeting a HCOMP 2026 full paper, with an ERC Consolidator grant proposal as broader context. Every design choice, every mechanism, every causal claim must be theoretically grounded and defensible. If something cannot be justified rigorously, say so. If you are unsure whether a claim holds, flag it as uncertain rather than presenting it as fact. Simo is a professor and CHI subcommittee chair; do not waste his time with nonsense.
 
 ## Project Overview
 
-ATLAS Pilot — a three-condition between-subjects online experiment (N≥300) that takes the first empirical step toward the ATLAS ERC application. The study validates whether behavioural genes ⟨Technique, Dosage, Mode⟩ are a natural cognitive structure for self-care, explores what minimal support helps people encode complete genes, and produces a seed gene atlas for stress/anxiety coping.
+ATLAS Pilot is a three-condition between-subjects online experiment (target N≥300) that takes a first empirical step toward measuring how everyday self-care practices can be reliably elicited and structured in a human-AI partnership. The study targets **HCOMP 2026 (full paper, archival)** and produces a v0.1 seed practice atlas for stress and anxiety coping.
+
+The pilot is independent of the ATLAS proposal's planned cross-cultural N≈1000 study. The proposal lives at `~/Documents/Academic/Proposals/ATLAS` (see `CLAUDE.local.md` for paths and venue context).
+
+### Locked design
+
+The locked design is in `docs/study_design_memo.md`. The internal date-stamped analysis plan is in `docs/analysis_plan_v1.md`. **No public OSF pre-registration.**
+
+### Terminology
+
+- **Primitive:** a single typed value on one dimension. Three primitive types: Technique (T), Dosage (D), Mode (M).
+- **Practice:** a triple ⟨T, D, M⟩.
+- **Practice report:** practice + context + outcome (raw participant submission).
+
+Pilot artefacts use these terms consistently. Earlier drafts used "behavioural gene" for what is now "practice"; that terminology has been retired from paper-facing artefacts.
 
 ### Conditions
-- **Condition 1 (Pure baseline):** Free-form text, no hints, no AI. Tests at what specificity level people naturally encode T/D/M.
-- **Condition 2 (Textual nudge):** Free-form text with verbal hints toward "what you do, how much, in what way." No AI interaction. Tests whether minimal prompting increases specificity.
-- **Condition 3 (AI coach):** Free text (same prompt as Cond 1), then 2 rounds of iterative AI dialogue. AI extracts a gene, highlights the weakest dimension, asks a targeted follow-up. Participant responds, AI refines. Produces round-by-round telemetry.
 
-**Key difference:** Conditions 1-2 have NO AI interaction during the study. AI extraction for those conditions happens post-hoc by researchers. Only Condition 3 involves live AI.
+- **Condition 1 (Pure baseline):** Free text, no hints, no AI. Tests at what specificity level people naturally encode T/D/M.
+- **Condition 2 (Textual nudge):** Free text with verbal hints toward "what you do, how much, in what way." No AI. Tests whether minimal prompting increases specificity.
+- **Condition 3 (AI coach):** Free text (same prompt as C1), then up to 2 rounds of iterative AI dialogue with a confirmation gate after each AI extraction. Participant can exit at round 0 if the extraction looks accurate. RoundsTaken ∈ {0, 1, 2} is itself a primary variable of interest.
 
-### Study Flow (as implemented in app)
-1. Consent + eligibility
+**Key difference:** Conditions 1-2 have NO AI interaction during the study. Only Condition 3 involves live AI. **Specificity coding for ALL conditions is done post-hoc by Prolific raters** (with rubric pilot to achieve kappa ≥ 0.6), not by the LLM. Canonical-technique clustering for the atlas is done expert-style by Hosio + 1 coauthor.
+
+### Domain
+
+All participants describe a practice they use **specifically when feeling stressed or anxious**, not as part of their general routine. PSS-4 (Cohen & Williamson 1988) administered at intake for sample characterisation only.
+
+### Study Flow (as currently implemented in app; some locked-design changes still pending in code, see Implementation TODOs below)
+
+1. Consent + eligibility (+ PSS-4: TODO)
 2. Practice description (condition-specific prompt)
-3. [Condition 3 only] AI coach refinement (2 rounds)
-4. Fidelity check — Cond 1-2 see their raw text back; Cond 3 sees structured gene
-5. Context + outcome (exploratory, self-reported triples)
+3. [Condition 3 only] AI coach refinement, max 2 rounds with confirmation gate (gate: TODO)
+4. Fidelity check: C1/C2 see their raw text back; C3 sees structured practice
+5. Context + outcome (exploratory practice-report fields)
 6. Questionnaire (willingness, interest, feedback)
 7. Debrief + completion code
 
-### Key Measurement: Specificity, Not Just Completeness
-Each dimension (T, D, M) is coded on a 0-3 specificity scale (absent → vague → named → parameterised/computable), grounded in TIDieR and Michie ontologies. Gene computability score = sum of T+D+M (0-9). Threshold for "computable" gene: ≥6. Coding is done post-hoc by researchers, not by the app.
+### Key Measurement: Specificity per Dimension
 
-### Dataset Contribution: Seed Gene Atlas
-The paper contributes a structured, openly published dataset. Post-collection, researchers cluster technique descriptions into canonical groups using BCTO merge/split criteria, catalogue dosage/mode variants, and publish on Zenodo/OSF.
+Each dimension (T, D, M) is coded on a 0-3 specificity scale (absent → category → named → parameterised), grounded in TIDieR (Hoffmann 2014) and the Michie ontologies (Michie 2013, Marques 2024). Sum specificity = T+D+M (0-9), reported as a descriptive composite only. The earlier "computability threshold" of ≥6 is dropped from the pilot's analysis.
+
+### Dataset Contribution: Seed Practice Atlas (v0.1)
+
+Released on Zenodo/OSF with the paper. Canonical-technique clustering done expert-style by Hosio + 1 coauthor using BCTO merge/split criteria (Marques et al., 2024). Not crowd-codable work.
+
+## Implementation TODOs from the locked design
+
+The app and supporting docs still need updates to match the locked design. None are technically blocking but all should ship before Prolific launch:
+
+- `app/steps/input.php`: update C1 and C2 prompt text to include "specifically when you are feeling stressed or anxious".
+- `app/steps/consent.php`: update eligibility text; add PSS-4 either at end of consent or as a new step before input.
+- `app/steps/refinement.php`: add confirmation gate after each AI extraction (Yes-exit / No-refine). Hard cap at 2 refinement rounds. Track RoundsTaken in DB.
+- `app/llm.php`: update system prompt to use "practice" / "primitive" terminology rather than "behavioural gene".
+- (Optional cleanup) Internal variable names (`$gene` → `$practice`), CSS class names (`.gene-card` → `.practice-card`), DB column comments. Schema (`gene_extractions` table) can stay; not user-facing.
+- `paper/paper.tex`: switch venue declaration from CHI '27 to HCOMP '26 and `acmart` document class option from `manuscript` to `sigconf`.
 
 ## Key Files and Folders
 
@@ -43,11 +76,11 @@ app/                        -- PHP web application
   db.php                    -- SQLite connection + schema init
   llm.php                   -- Claude API wrapper (extraction + refinement prompts)
   steps/                    -- One PHP file per study step
-    consent.php             -- Consent + eligibility + condition assignment
-    input.php               -- Practice description (all conditions)
-    refinement.php          -- AI coach rounds (Condition 3 only)
+    consent.php             -- Consent + eligibility + condition assignment (PSS-4 TODO)
+    input.php               -- Practice description (locked-prompt update TODO)
+    refinement.php          -- AI coach rounds (confirmation-gate TODO)
     fidelity.php            -- Review + fidelity Likert scales
-    exploratory.php         -- Context + outcome triples
+    exploratory.php         -- Context + outcome fields
     questionnaire.php       -- Final Likert scales + feedback
     debrief.php             -- Completion code + Prolific redirect
   templates/                -- header.php, footer.php (Bootstrap layout)
@@ -55,45 +88,42 @@ app/                        -- PHP web application
   data/                     -- SQLite database file (GITIGNORED)
 
 docs/
-  study_design_memo.md      -- Current study design rationale and decisions
-  ideas_ontology_normalisation.md -- Research notes on gene normalisation
-  pilot_idea.md.txt         -- Original study concept (superseded)
+  study_design_memo.md          -- Locked study design (source of truth)
+  analysis_plan_v1.md           -- Locked, date-stamped internal analysis plan
+  ideas_ontology_normalisation.md -- Research notes on practice normalisation (BCTO criteria, GO synonym taxonomy)
+  pilot_idea.md.txt             -- SUPERSEDED original concept (kept for history)
 
-paper/                      -- CHI paper (separate git repo, syncs with Overleaf)
-  paper.tex                 -- Paper structure with section outlines
-  references.bib            -- Scratchpad bibliography
-  context/                  -- All the related work of the paper here as .md files
+paper/                      -- HCOMP/ACM paper (separate git repo, Overleaf-synced)
+  paper.tex                 -- Paper source (currently declares CHI '27; needs HCOMP '26 update)
+  references.bib            -- Bibliography
+  context/                  -- Related-work .md notes
 ```
+
+Note on internal naming: the database table `gene_extractions` and some PHP variables / CSS classes (`$gene`, `.gene-card`) retain the older terminology. They are not user-facing and have been left alone to avoid schema migrations during active development. Renaming is optional cleanup.
 
 ## Tech Stack
 
-- **Backend:** PHP 8+ (no framework), SQLite database
-- **Frontend:** Bootstrap 5 via CDN
-- **Hosting:** Railway
-- **LLM Integration:** Claude API for Condition 3 only (real-time extraction + refinement)
+- Backend: PHP 8+ (no framework), SQLite database
+- Frontend: Bootstrap 5 via CDN
+- Hosting: Railway
+- LLM: Claude API for Condition 3 only (real-time extraction + refinement)
 
 ## Admin Dashboard
 
 Access: `/admin.php?key=<admin_key>`
+
 - Overview stats, per-condition breakdown
 - Test links for all 3 conditions (test_ prefix = no DB writes)
 - Participant table with delete button (removes all associated data)
-- Detail view per participant (full response chain, gene extraction trajectory)
-- CSV exports (participants, responses, gene_extractions, questionnaire)
+- Detail view per participant (full response chain, practice extraction trajectory)
+- CSV exports
 - Raw SQLite DB download
-
-## Key Domain Concepts
-
-- **Behavioural Gene:** A structured unit ⟨T: Technique, D: Dosage, M: Mode⟩ representing a self-care practice
-- **Gene Specificity:** Each dimension coded 0-3 (absent/vague/named/parameterised). Computability score = T+D+M (0-9).
-- **Semantic Fidelity:** Whether captured T/D/M values accurately describe the practice
-- **Ontology Collapse:** The risk that unconstrained natural language produces infinite gene variants. Addressed by post-hoc merging using BCTO criteria.
 
 ## Study Parameters
 
-- Target: ≥300 participants (≥100 per condition), not a ceiling
-- Recruited via Prolific + web (dual source tracked via PID prefix)
-- Domain: Stress/anxiety coping practices
-- Duration: ~10 minutes per participant
-- Compensation: €3-4
-- Pre-registration: OSF before Prolific launch
+- Target: ≥100 per condition (≥300 total). Round-number total locked after a small pilot launch confirms recruitment rate.
+- Recruited via Prolific + open web (source tracked via PID prefix).
+- Domain: practices used specifically when feeling stressed or anxious.
+- Duration: ~10 minutes per participant.
+- Compensation: €3-4.
+- Pre-registration: NONE (no public OSF pre-reg). Internal analysis plan in `docs/analysis_plan_v1.md`.
