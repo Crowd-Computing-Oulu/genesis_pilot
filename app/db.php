@@ -16,6 +16,14 @@ function get_db(): SQLite3 {
     return $db;
 }
 
+function add_column_if_missing(SQLite3 $db, string $table, string $column, string $definition): void {
+    $result = $db->query("PRAGMA table_info({$table})");
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        if ($row['name'] === $column) return;
+    }
+    $db->exec("ALTER TABLE {$table} ADD COLUMN {$column} {$definition}");
+}
+
 function init_schema(SQLite3 $db): void {
     $db->exec("
         CREATE TABLE IF NOT EXISTS participants (
@@ -25,7 +33,13 @@ function init_schema(SQLite3 $db): void {
             condition_num INTEGER NOT NULL,
             started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             completed_at DATETIME,
-            completion_code TEXT NOT NULL
+            completion_code TEXT NOT NULL,
+            pss4_q1 INTEGER,
+            pss4_q2 INTEGER,
+            pss4_q3 INTEGER,
+            pss4_q4 INTEGER,
+            pss4_sum INTEGER,
+            rounds_taken INTEGER
         );
 
         CREATE TABLE IF NOT EXISTS responses (
@@ -51,6 +65,7 @@ function init_schema(SQLite3 $db): void {
             targeted_dimension TEXT,
             ai_question TEXT,
             raw_llm_response TEXT,
+            gate_decision TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (participant_id) REFERENCES participants(id)
         );
@@ -70,4 +85,13 @@ function init_schema(SQLite3 $db): void {
             FOREIGN KEY (participant_id) REFERENCES participants(id)
         );
     ");
+
+    // Migrations for existing databases (idempotent: ALTER TABLE only if column missing)
+    add_column_if_missing($db, 'participants', 'pss4_q1', 'INTEGER');
+    add_column_if_missing($db, 'participants', 'pss4_q2', 'INTEGER');
+    add_column_if_missing($db, 'participants', 'pss4_q3', 'INTEGER');
+    add_column_if_missing($db, 'participants', 'pss4_q4', 'INTEGER');
+    add_column_if_missing($db, 'participants', 'pss4_sum', 'INTEGER');
+    add_column_if_missing($db, 'participants', 'rounds_taken', 'INTEGER');
+    add_column_if_missing($db, 'gene_extractions', 'gate_decision', 'TEXT');
 }

@@ -31,7 +31,7 @@ if ($step === 'consent' && !isset($_SESSION['participant_id'])) {
 $is_test = ($_SESSION['source'] ?? '') === 'test';
 
 // Calculate progress for progress bar
-$steps_order = ['consent', 'input', 'refinement', 'fidelity', 'exploratory', 'questionnaire', 'debrief'];
+$steps_order = ['consent', 'intake', 'input', 'refinement', 'fidelity', 'exploratory', 'questionnaire', 'debrief'];
 $current_index = array_search($step, $steps_order);
 $total_steps = count($steps_order);
 $progress = $current_index !== false ? (($current_index) / ($total_steps - 1)) * 100 : 0;

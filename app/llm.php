@@ -40,9 +40,9 @@ function call_claude(string $system_prompt, string $user_message): ?array {
 }
 
 function extract_gene(string $description): ?array {
-    $system = "You are a research assistant helping to encode self-care practices into structured behavioural genes.
+    $system = "You are a research assistant helping to encode self-care practices into structured triples of three primitives: Technique, Dosage, and Mode.
 
-Given a free-text description of a stress/anxiety coping practice, extract three dimensions:
+Given a free-text description of a practice the person uses specifically when feeling stressed or anxious, extract three primitive values:
 - Technique: What exactly the person does
 - Dosage: How much, how long, how often
 - Mode: In what form, setting, or with what support
@@ -73,11 +73,11 @@ Respond ONLY with valid JSON in this exact format:
 }
 
 function refine_gene(string $original_description, array $current_gene, string $participant_response, string $targeted_dimension): ?array {
-    $system = "You are a research assistant helping to refine a structured behavioural gene for a self-care practice.
+    $system = "You are a research assistant helping to refine a structured practice (Technique, Dosage, Mode primitives) describing a participant's self-care.
 
-The participant originally described their stress/anxiety coping practice. An initial extraction was made, and now the participant has provided additional detail about the {$targeted_dimension} dimension.
+The participant originally described a practice they use specifically when feeling stressed or anxious. An initial extraction was made, and now the participant has provided additional detail about the {$targeted_dimension} dimension.
 
-Update the gene extraction with the new information. Also generate a natural follow-up question for the NEXT weakest dimension (not the one just refined).
+Update the extraction with the new information. Also generate a natural follow-up question for the NEXT weakest dimension (not the one just refined).
 
 Respond ONLY with valid JSON:
 {
@@ -122,7 +122,7 @@ function get_initial_question(array $gene): array {
     }
 
     $questions = [
-        'technique' => "You mentioned your practice but we'd like more detail. Can you describe exactly what you do — the specific steps or method?",
+        'technique' => "You mentioned your practice but we'd like more detail. Can you describe exactly what you do, including the specific steps or method?",
         'dosage' => "We'd love to know more about how much you do this. How long does a typical session last, and how often do you do it?",
         'mode' => "Can you tell us more about how you do this practice? For example, do you do it alone or with others? In a specific place or setting? With any tools or apps?",
     ];
